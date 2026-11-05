@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#FF4500">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAXXMOTO — каталог мотоциклов</title>
+    <meta name="description" content="Каталог мотоциклов MAXXMOTO: эндуро, спорт, круизёры. Подбор мототехники, доставка по России. Консультации по телефону и в Telegram.">
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #1a1a1a;
+            --card-bg: #ffffff;
+            --accent: #FF4500;
+--accent-hover: #e03d00;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --border: #e0e0e0;
+            --modal-overlay: rgba(0,0,0,0.6);
+            --footer-bg: #f9f9f9;
+            --btn-text: #ffffff;
+            --header-bg: #ffffff;
+            --header-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        body.dark-theme {
+            --bg: #121212;
+            --text: #e0e0e0;
+            --card-bg: #1e1e1e;
+            --accent: #ff6d3a;
+--accent-hover: #ff5722;
+            --shadow: 0 4px 12px rgba(0,0,0,0.4);
+            --border: #333333;
+            --modal-overlay: rgba(0,0,0,0.8);
+            --footer-bg: #1a1a1a;
+            --header-bg: #1e1e1e;
+            --header-shadow: 0 2px 8px rgba(255,255,255,0.05);
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            transition: background-color 0.3s, color 0.3s;
+            line-height: 1.6;
+        }
+        a { color: var(--accent); text-decoration: none; }
+        .header {
+    background: var(--header-bg);
+    box-shadow: var(--header-shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;  /* было space-between */
+    gap: 2rem;                     /* добавлено */
+    flex-wrap: wrap;
+}
+        .logo { font-size: 1.8rem; font-weight: 800; letter-spacing: 2px; color: var(--accent); }
+        .nav-menu { display: flex; gap: 2rem; }
+        .nav-menu a { font-weight: 600; color: var(--text); transition: color 0.2s; }
+        .nav-menu a:hover { color: var(--accent); }
+        .theme-toggle {
+            background: none; border: 1px solid var(--border); border-radius: 50%;
+            width: 40px; height: 40px; font-size: 1.4rem; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: background 0.3s;
+        }
+        .theme-toggle:hover { background: var(--accent); }
+
+        .catalog-section { padding: 2rem 1rem; max-width: 1400px; margin: 0 auto; }
+        .catalog-section h2 { text-align: center; margin-bottom: 1rem; font-size: 2.2rem; font-weight: 700; color: var(--accent); }
+
+        /* Фильтр категорий */
+        .filter-bar {
+            display: flex; justify-content: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem;
+        }
+        .filter-btn {
+            padding: 0.4rem 1.2rem; border-radius: 20px; border: 1px solid var(--border);
+            background: var(--card-bg); color: var(--text); cursor: pointer; font-weight: 500;
+            transition: all 0.2s; text-decoration: none; display: inline-block;
+        }
+        .filter-btn.active, .filter-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+        /* Сортировка и счётчик товаров */
+        .sort-bar {
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+            gap: 0.8rem; margin-bottom: 1.5rem; padding: 0 0.25rem;
+        }
+        .catalog-count { font-size: 0.85rem; color: var(--text); opacity: 0.7; }
+        .sort-group { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .sort-btn {
+            padding: 0.35rem 0.9rem; border-radius: 16px; border: 1px solid var(--border);
+            background: var(--card-bg); color: var(--text); cursor: pointer; font-weight: 500;
+            font-size: 0.85rem; text-decoration: none; transition: all 0.2s;
+        }
+        .sort-btn.active, .sort-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+
+        .catalog-empty { text-align: center; padding: 3rem 1rem; color: var(--text); opacity: 0.6; }
+
+        /* Пагинация */
+        .pagination {
+            display: flex; justify-content: center; align-items: center; gap: 0.5rem;
+            flex-wrap: wrap; margin-top: 2rem;
+        }
+        .page-link {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-width: 36px; height: 36px; padding: 0 10px; border-radius: 8px;
+            border: 1px solid var(--border); background: var(--card-bg); color: var(--text);
+            text-decoration: none; font-weight: 500; transition: all 0.2s;
+        }
+        .page-link:hover { border-color: var(--accent); color: var(--accent); }
+        .page-link.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.5rem;
+        }
+        .card {
+            background: var(--card-bg); border-radius: 16px; box-shadow: var(--shadow);
+            overflow: hidden; transition: transform 0.25s, box-shadow 0.25s;
+            display: flex; flex-direction: column;
+        }
+        .card:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        .card-img-wrapper {
+            position: relative; width: 100%; padding-top: 75%; overflow: hidden; background: #f0f0f0;
+        }
+        .card-img-wrapper img {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: filter 0.3s;
+        }
+        .card-img-wrapper img.grayscale { filter: grayscale(100%); }
+        .status-badge {
+            position: absolute; top: 10px; left: 10px; background: var(--accent); color: white;
+            padding: 0.3rem 1rem; border-radius: 20px; font-weight: 700; font-size: 0.85rem; z-index: 2;
+        }
+        .card-body { padding: 1rem; display: flex; flex-direction: column; flex: 1; }
+        .card-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.3rem; color: var(--text); }
+        .card-category { font-size: 0.8rem; color: var(--accent); margin-bottom: 0.5rem; text-transform: uppercase; }
+        .card-desc { font-size: 0.95rem; margin-bottom: 0.5rem; flex: 1; color: var(--text); opacity: 0.8; }
+        .views-count { font-size: 0.8rem; color: var(--text); opacity: 0.6; margin-bottom: 0.8rem; }
+        .btn-price {
+            display: inline-block; background: var(--accent); color: var(--btn-text); border: none;
+            padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 700; cursor: pointer;
+            transition: background 0.2s, transform 0.1s; align-self: flex-start;
+        }
+        .btn-price:hover { background: var(--accent-hover); transform: translateY(-1px); }
+
+        .contacts-section {
+            background: var(--footer-bg); padding: 3rem 1rem; text-align: center; margin-top: 2rem; border-top: 1px solid var(--border);
+        }
+        .contacts-section h2 { color: var(--accent); margin-bottom: 1.5rem; }
+        .contact-info p { margin: 0.5rem 0; font-size: 1.2rem; }
+
+        .footer { background: var(--footer-bg); padding: 2rem 1rem; text-align: center; border-top: 1px solid var(--border); }
+        .footer-icons { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1.5rem; }
+        .footer-icon-btn {
+            width: 40px; height: 40px; border-radius: 50%; background: var(--accent);
+            display: flex; align-items: center; justify-content: center; transition: transform 0.2s;
+            cursor: pointer; border: none;
+        }
+        .footer-icon-btn:hover { transform: scale(1.1); }
+        .footer-icon-btn img { width: 20px; height: 20px; }
+        .footer-text { font-size: 0.9rem; opacity: 0.8; margin-bottom: 0.5rem; }
+        .legal-text { font-size: 0.75rem; opacity: 0.6; margin-top: 0.8rem; }
+
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--modal-overlay); z-index: 200; align-items: center; justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: var(--card-bg); border-radius: 20px; padding: 2rem; max-width: 400px; width: 90%;
+            text-align: center; box-shadow: 0 12px 32px rgba(0,0,0,0.3); position: relative; animation: modalIn 0.3s ease;
+        }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        .modal-close { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--text); }
+        .modal p { margin-bottom: 1.5rem; font-size: 1.1rem; }
+        .modal-links { display: flex; flex-direction: column; gap: 1rem; }
+        .modal-link {
+            display: block; background: var(--accent); color: white; padding: 0.8rem; border-radius: 10px;
+            font-weight: 700; text-decoration: none; transition: background 0.2s;
+        }
+        .modal-link:hover { background: var(--accent-hover); }
+
+        /* Куки-баннер и опрос */
+        .cookie-banner {
+            position: fixed; bottom: 0; left: 0; right: 0; background: var(--card-bg);
+            border-top: 2px solid var(--accent); padding: 1rem 2rem; display: flex; align-items: center;
+            justify-content: space-between; flex-wrap: wrap; gap: 1rem; z-index: 300;
+            box-shadow: 0 -4px 16px rgba(0,0,0,0.15); transform: translateY(100%); transition: transform 0.4s ease;
+        }
+        .cookie-banner.show { transform: translateY(0); }
+        .cookie-text { flex: 1; min-width: 200px; font-size: 0.9rem; line-height: 1.5; }
+        .cookie-buttons { display: flex; gap: 0.8rem; }
+        .btn-cookie {
+            padding: 0.6rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: none;
+            transition: background 0.2s; font-size: 0.9rem;
+        }
+        .btn-cookie-accept { background: var(--accent); color: white; }
+        .btn-cookie-accept:hover { background: var(--accent-hover); }
+        .btn-cookie-decline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+        .btn-cookie-decline:hover { background: var(--border); }
+
+        .survey-modal .survey-options { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1rem; }
+        .survey-btn { background: var(--accent); color: white; border: none; padding: 0.6rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .survey-btn:hover { background: var(--accent-hover); }
+        /* Отзывы */
+        .reviews-section {
+            max-width: 1400px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+        .reviews-section h2 {
+            text-align: center;
+            color: var(--accent);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .review-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .review-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .review-content {
+            padding: 1.2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .review-text {
+            font-style: italic;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+        .review-author {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+.quiz-trigger {
+  display: inline-block;
+  margin: 0 auto;
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.quiz-trigger:hover { opacity: 0.9; }
+
+.quiz-question {
+  margin-bottom: 1rem;
+}
+.quiz-question label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+.quiz-question select {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--card-bg);
+  color: var(--text);
+}
+
+.quiz-result-item {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 0.8rem;
+  box-shadow: var(--shadow);
+}
+.quiz-result-item h3 { color: var(--accent); margin-bottom: 0.3rem; }
+
+        @media (max-width: 1200px) { .catalog-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 768px) { .catalog-grid { grid-template-columns: repeat(2, 1fr); } .header { padding: 1rem; } .nav-menu { gap: 1rem; } }
+        @media (max-width: 480px) {
+    .catalog-grid { grid-template-columns: 1fr; }
+    .header {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.5rem 1rem;
+    }
+    .logo { font-size: 1.4rem; }
+    .nav-menu {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+        gap: 0.8rem;
+        margin-top: 0.5rem;
+        font-size: 0.85rem;
+    }
+    .theme-toggle {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+        flex-shrink: 0;
+        margin-left: auto;
+    }
+}
+/* === Карусель фото === */
+.card-img-carousel {
+    position: relative;
+    width: 100%;
+    padding-top: 75%; /* 4:3 */
+    overflow: hidden;
+    background: #f0f0f0;
+}
+.carousel-slides {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    transition: transform 0.3s ease;
+}
+.carousel-slides img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.4);
+    color: white;
+    border: none;
+    font-size: 1.2rem;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.card-img-carousel:hover .carousel-btn { opacity: 1; }
+.carousel-prev { left: 8px; }
+.carousel-next { right: 8px; }
+.carousel-dots {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 2;
+}
+.carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+    opacity: 0.5;
+    cursor: pointer;
+}
+.carousel-dot.active { opacity: 1; background: var(--accent); }
+.btn-detail {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+    align-self: flex-start;
+}
+.btn-detail:hover {
+    background: var(--accent);
+    color: white;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 2rem;
+    margin-left: auto;             /* добавлено — толкает меню вправо */
+}
+.search-bar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+.search-bar input {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 25px;
+    font-size: 1rem;
+    background: var(--card-bg);
+    color: var(--text);
+}
+.search-bar input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+#scrollToTop {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    transition: opacity 0.3s;
+}
+#scrollToTop.show { display: flex; }
+
+
+    </style>
+</head>
+<body>
+
+<script>
+(function () {
+  var originalFetch = window.fetch;
+  window.fetch = function (input, init) {
+    var url = typeof input === 'string' ? input : (input && input.url) || '';
+    if (url.indexOf('/api/') === 0) {
+      return Promise.resolve(new Response(JSON.stringify({ success: false }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      }));
+    }
+    return originalFetch.apply(this, arguments);
+  };
+})();
+</script>
+
+
+    <header class="header">
+        <div class="logo">MAXXMOTO</div>
+        <nav class="nav-menu">
+            <a href="#catalog">Каталог</a>
+	    <a href="#" id="favoritesLink">Избранное (<span id="favCount">0</span>)</a>
+	    <a href="/reviews">Отзывы</a>
+            <a href="#contacts">Контакты</a>
+        </nav>
+        <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">☀️</button>
+    </header>
+
+    <section class="catalog-section" id="catalog">
+        <h2>Каталог мотоциклов</h2>
+        <!-- Фильтр категорий -->
+<div class="search-bar">
+    <input type="text" id="searchInput" placeholder="🔍 Поиск по названию...">
+</div>
+        <div class="filter-bar" id="filterBar">
+            <a href="/?sort=default&category=all#catalog" class="filter-btn active">Все</a>
+            <a href="/?sort=default&category=street#catalog" class="filter-btn">Street</a>
+            <a href="/?sort=default&category=enduro#catalog" class="filter-btn">Enduro</a>
+            <a href="/?sort=default&category=cruiser#catalog" class="filter-btn">Cruiser</a>
+            <a href="/?sort=default&category=sport#catalog" class="filter-btn">Sport</a>
+            <a href="/?sort=default&category=adventure#catalog" class="filter-btn">Adventure</a>
+            <a href="/?sort=default&category=retro#catalog" class="filter-btn">Retro</a>
+            <a href="/?sort=default&category=dirt#catalog" class="filter-btn">Dirt</a>
+        </div>
+
+        <div class="sort-bar">
+            <span class="catalog-count">5 товаров</span>
+            <div class="sort-group">
+                <a href="/?sort=default&category=all#catalog" class="sort-btn active">По умолч.</a>
+                <a href="/?sort=views_desc&category=all#catalog" class="sort-btn">Популярные</a>
+                <a href="/?sort=name&category=all#catalog" class="sort-btn">По названию</a>
+            </div>
+        </div>
+
+        
+
+        <div class="catalog-grid" id="catalogGrid">
+            
+            <div class="card" data-category="sport" data-id="1">
+                <div class="card-img-carousel" data-id="1">
+    <div class="carousel-slides" id="slides-1">
+        
+        <img src="/static/dc1bfb7b397146c98b79b03847c6ea2d.jpeg" alt="Sanchez Maniac PR300" loading="lazy" class="grayscale">
+        
+        <img src="/static/3942d9c8a720437db11aa22013f90d2b.jpeg" alt="Sanchez Maniac PR300" loading="lazy" class="grayscale">
+        
+        <img src="/static/d8c2502ec8804b01b848e28e1298b891.jpeg" alt="Sanchez Maniac PR300" loading="lazy" class="grayscale">
+        
+        <img src="/static/fb842925bb6840cfbf9a99531a774302.jpeg" alt="Sanchez Maniac PR300" loading="lazy" class="grayscale">
+        
+    </div>
+    
+    <button class="carousel-btn carousel-prev" onclick="moveSlide(1, -1)">&#10094;</button>
+    <button class="carousel-btn carousel-next" onclick="moveSlide(1, 1)">&#10095;</button>
+    <div class="carousel-dots" id="dots-1">
+        
+        <span class="carousel-dot active" onclick="goToSlide(1, 0)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(1, 1)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(1, 2)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(1, 3)"></span>
+        
+    </div>
+    
+    
+    <span class="status-badge">ПОД ЗАКАЗ</span>
+    
+</div>
+                <div class="card-body">
+                    <h3 class="card-title">Sanchez Maniac PR300</h3>
+                    <div class="card-category">Sport</div>
+                    <p class="card-desc">бла бла бла большой текст здесь должен вместиться</p>
+                    <div class="views-count">👁 182 просмотров</div>
+                    <button class="btn-price" onclick="openPriceModal()">Узнать цену</button>
+		    <a href="/moto/1" class="btn-detail">Подробнее</a>
+                </div>
+            </div>
+            
+            <div class="card" data-category="adventure" data-id="4">
+                <div class="card-img-carousel" data-id="4">
+    <div class="carousel-slides" id="slides-4">
+        
+        <img src="/static/fb38154d16814601ba382385ea4434a0.jfif" alt="Квадроцикл Hisun 550" loading="lazy" >
+        
+        <img src="/static/03e5308dc33c4c419727d0162c540588.jfif" alt="Квадроцикл Hisun 550" loading="lazy" >
+        
+        <img src="/static/4592be176dd2499fb4a9608bd61ef1de.jfif" alt="Квадроцикл Hisun 550" loading="lazy" >
+        
+        <img src="/static/028ffcd3f1f144848a5c37472665216b.jfif" alt="Квадроцикл Hisun 550" loading="lazy" >
+        
+        <img src="/static/d0155a4164094b468533a439c9d21daf.jfif" alt="Квадроцикл Hisun 550" loading="lazy" >
+        
+        <img src="/static/ed399441944b47b48f5a5a42e8bb0caa.jfif" alt="Квадроцикл Hisun 550" loading="lazy" >
+        
+        <img src="/static/44187b82ed6343a783ecdbddb851f15f.jfif" alt="Квадроцикл Hisun 550" loading="lazy" >
+        
+        <img src="/static/ab96924ec03a499bb3a0191c618b77db.jfif" alt="Квадроцикл Hisun 550" loading="lazy" >
+        
+    </div>
+    
+    <button class="carousel-btn carousel-prev" onclick="moveSlide(4, -1)">&#10094;</button>
+    <button class="carousel-btn carousel-next" onclick="moveSlide(4, 1)">&#10095;</button>
+    <div class="carousel-dots" id="dots-4">
+        
+        <span class="carousel-dot active" onclick="goToSlide(4, 0)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(4, 1)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(4, 2)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(4, 3)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(4, 4)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(4, 5)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(4, 6)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(4, 7)"></span>
+        
+    </div>
+    
+    
+</div>
+                <div class="card-body">
+                    <h3 class="card-title">Квадроцикл Hisun 550</h3>
+                    <div class="card-category">Adventure</div>
+                    <p class="card-desc">🔥  Квадроцикл Hisun 550 (546 см³) — мощь, проходимость и надёжность в одном корпусе!</p>
+                    <div class="views-count">👁 124 просмотров</div>
+                    <button class="btn-price" onclick="openPriceModal()">Узнать цену</button>
+		    <a href="/moto/4" class="btn-detail">Подробнее</a>
+                </div>
+            </div>
+            
+            <div class="card" data-category="sport" data-id="5">
+                <div class="card-img-carousel" data-id="5">
+    <div class="carousel-slides" id="slides-5">
+        
+        <img src="/static/b44514be2e754f77974c1d2083478827.jpeg" alt="Progasi Super Max 300" loading="lazy" >
+        
+        <img src="/static/f62467462eb54f7794b747e45035d61e.jpeg" alt="Progasi Super Max 300" loading="lazy" >
+        
+        <img src="/static/a87bce0e4c224f8e860122708cb21a7d.jpeg" alt="Progasi Super Max 300" loading="lazy" >
+        
+        <img src="/static/1f7b5c85ff7448e19ae3c3d995dcd79e.jpeg" alt="Progasi Super Max 300" loading="lazy" >
+        
+        <img src="/static/c14b7381edf04fa4a82b35d5834d9ec9.jpeg" alt="Progasi Super Max 300" loading="lazy" >
+        
+        <img src="/static/15f7c6e117ca4fae9a40d031fe8605fa.jpeg" alt="Progasi Super Max 300" loading="lazy" >
+        
+    </div>
+    
+    <button class="carousel-btn carousel-prev" onclick="moveSlide(5, -1)">&#10094;</button>
+    <button class="carousel-btn carousel-next" onclick="moveSlide(5, 1)">&#10095;</button>
+    <div class="carousel-dots" id="dots-5">
+        
+        <span class="carousel-dot active" onclick="goToSlide(5, 0)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(5, 1)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(5, 2)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(5, 3)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(5, 4)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(5, 5)"></span>
+        
+    </div>
+    
+    
+</div>
+                <div class="card-body">
+                    <h3 class="card-title">Progasi Super Max 300</h3>
+                    <div class="card-category">Sport</div>
+                    <p class="card-desc">❗️  ❗️ ❗️ Запрoситe наш кaтaлoг нa вcю мототеxнику пpямо здeсь, в личных cоoбщeнияx, и пoлучитe пeрсональный прoмoкoд на 50% cкидку на доcтавку до вaшегo гоpoдa!</p>
+                    <div class="views-count">👁 108 просмотров</div>
+                    <button class="btn-price" onclick="openPriceModal()">Узнать цену</button>
+		    <a href="/moto/5" class="btn-detail">Подробнее</a>
+                </div>
+            </div>
+            
+            <div class="card" data-category="enduro" data-id="6">
+                <div class="card-img-carousel" data-id="6">
+    <div class="carousel-slides" id="slides-6">
+        
+        <img src="/static/8e2ab1e270974d5d8606c8c165b201d0.jpeg" alt="Shot NB300 rockstar" loading="lazy" class="grayscale">
+        
+        <img src="/static/451d6d3052654626918754181fa82c87.jpeg" alt="Shot NB300 rockstar" loading="lazy" class="grayscale">
+        
+        <img src="/static/e7f3d8aef4d943c0b5502ea2adedc691.jpeg" alt="Shot NB300 rockstar" loading="lazy" class="grayscale">
+        
+        <img src="/static/9b72c92e87ef47f7ad26d50dff1d406e.jpeg" alt="Shot NB300 rockstar" loading="lazy" class="grayscale">
+        
+        <img src="/static/bd670ef07dac4c6ba68ed6534fc7d072.jpeg" alt="Shot NB300 rockstar" loading="lazy" class="grayscale">
+        
+    </div>
+    
+    <button class="carousel-btn carousel-prev" onclick="moveSlide(6, -1)">&#10094;</button>
+    <button class="carousel-btn carousel-next" onclick="moveSlide(6, 1)">&#10095;</button>
+    <div class="carousel-dots" id="dots-6">
+        
+        <span class="carousel-dot active" onclick="goToSlide(6, 0)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(6, 1)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(6, 2)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(6, 3)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(6, 4)"></span>
+        
+    </div>
+    
+    
+    <span class="status-badge">ПОД ЗАКАЗ</span>
+    
+</div>
+                <div class="card-body">
+                    <h3 class="card-title">Shot NB300 rockstar</h3>
+                    <div class="card-category">Enduro</div>
+                    <p class="card-desc">SНОТ ROСKSTAR NВ300 — это мощный эндурo-байк c совpеменными хаpактepиcтикaми, pассчитaнный нa экстpемальныe услoвия и aгpeccивную езду. Он сочетaeт в cебe высокую пpохoдимоcть.</p>
+                    <div class="views-count">👁 71 просмотров</div>
+                    <button class="btn-price" onclick="openPriceModal()">Узнать цену</button>
+		    <a href="/moto/6" class="btn-detail">Подробнее</a>
+                </div>
+            </div>
+            
+            <div class="card" data-category="enduro" data-id="7">
+                <div class="card-img-carousel" data-id="7">
+    <div class="carousel-slides" id="slides-7">
+        
+        <img src="/static/8c279a8c4a4a473395c5ea93499e0545.jpeg" alt="Hengjian Z300 2T" loading="lazy" class="grayscale">
+        
+        <img src="/static/e4ee0bb4be64438cad8f7dccfdbc6719.jpeg" alt="Hengjian Z300 2T" loading="lazy" class="grayscale">
+        
+        <img src="/static/3db2893992674cc18670246f4c305abd.jpeg" alt="Hengjian Z300 2T" loading="lazy" class="grayscale">
+        
+        <img src="/static/58da01d0a66e4c06b98a76d7ff4b0edf.jpeg" alt="Hengjian Z300 2T" loading="lazy" class="grayscale">
+        
+        <img src="/static/42db6273eaa34331aaa47ad0d9b530ce.jpeg" alt="Hengjian Z300 2T" loading="lazy" class="grayscale">
+        
+    </div>
+    
+    <button class="carousel-btn carousel-prev" onclick="moveSlide(7, -1)">&#10094;</button>
+    <button class="carousel-btn carousel-next" onclick="moveSlide(7, 1)">&#10095;</button>
+    <div class="carousel-dots" id="dots-7">
+        
+        <span class="carousel-dot active" onclick="goToSlide(7, 0)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(7, 1)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(7, 2)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(7, 3)"></span>
+        
+        <span class="carousel-dot " onclick="goToSlide(7, 4)"></span>
+        
+    </div>
+    
+    
+    <span class="status-badge">ПОД ЗАКАЗ</span>
+    
+</div>
+                <div class="card-body">
+                    <h3 class="card-title">Hengjian Z300 2T</h3>
+                    <div class="card-category">Enduro</div>
+                    <p class="card-desc">❗️HENGJIAN S8 с 2-мя свечами в максимальной комплектации. ПОД ЗАКАЗ, ОЖИДАНИЕ 2-3 НЕДЕЛИ❗️</p>
+                    <div class="views-count">👁 72 просмотров</div>
+                    <button class="btn-price" onclick="openPriceModal()">Узнать цену</button>
+		    <a href="/moto/7" class="btn-detail">Подробнее</a>
+                </div>
+            </div>
+            
+        </div>
+
+        
+    </section>
+
+    <section class="contacts-section" id="contacts">
+    <h2>Контакты</h2>
+    <div class="contact-info">
+        <p>📞 +7-917-705-72-55 (Максим)</p>
+        <p>✉️ Telegram: <a href="https://t.me/maaxxrr" target="_blank">@maaxxrr</a></p>
+        <p style="margin-top: 1rem;">📘 <a href="/static/guide-enduro.pdf" target="_blank">Краткое руководство MAXXMOTO: всё об эндуро простым языком</a></p>
+    </div>
+</section>
+
+<div style="text-align: center; margin: 2rem 0;">
+        <button class="quiz-trigger" onclick="openQuiz()">🔍 Подобрать мотоцикл</button>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-icons">
+            <a href="https://www.avito.ru/brands/7451b9435ee675beaf3c50bb265f82c4?src=sharing" target="_blank" class="footer-icon-btn" title="Авито">
+                <img src="/static/avito.svg" alt="Авито" width="24" height="24">
+            </a>
+            <a href="https://t.me/maaxxrr" target="_blank" class="footer-icon-btn" title="Telegram">
+                <img src="/static/telegram.svg" alt="Telegram" width="24" height="24">
+            </a>
+            <a href="https://example.com" target="_blank" class="footer-icon-btn" title="Max">
+                <img src="/static/maxlogo.svg" alt="Max" width="24" height="24">
+            </a>
+            <a href="#" class="footer-icon-btn" title="Настройки cookie" onclick="showCookieBanner(); return false;">
+                <img src="/static/cookies.svg" alt="Cookies" width="24" height="24">
+            </a>
+        </div>
+	<span style="display:inline-block;background:var(--text);color:var(--bg);padding:0.2rem 0.5rem;border-radius:4px;font-weight:700;font-size:0.75rem;margin-bottom:0.5rem;">16+</span>
+        <p class="footer-text">© 2026 MAXXMOTO. Все права защищены.</p>
+        <p class="legal-text">Все услуги предоставляет Александров Максим Викторович.</p>
+<p class="legal-text">
+    <a href="/static/privacy.pdf" target="_blank">Политика конфиденциальности</a>
+</p>
+    </footer>
+
+    <!-- Модальное окно «Узнать цену» -->
+    <div class="modal-overlay" id="priceModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closePriceModal()">&times;</button>
+            <p>Для уточнения актуальной цены и наличия свяжитесь с менеджером удобным способом</p>
+            <div class="modal-links">
+                <a href="https://t.me/maaxxrr?text=Добрый%20день!%20Пишу%20с%20сайта%20MAXXMOTO" target="_blank" class="modal-link">Telegram</a>
+                <a href="https://www.avito.ru/user/maxmoto" target="_blank" class="modal-link">Авито</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Опрос -->
+    <div class="modal-overlay" id="surveyModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeSurvey()">&times;</button>
+            <p>Расскажите, откуда вы о нас узнали?</p>
+            <div class="survey-options">
+                <button class="survey-btn" data-answer="Авито">Авито</button>
+                <button class="survey-btn" data-answer="Telegram">Telegram</button>
+                <button class="survey-btn" data-answer="Яндекс">Яндекс</button>
+                <button class="survey-btn" data-answer="Знакомые">Знакомые</button>
+                <button class="survey-btn" data-answer="Другое">Другое</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Куки-баннер -->
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-text">
+            🍪 Мы используем файлы cookie для улучшения работы сайта, анализа трафика и персонализации контента. Продолжая использовать MAXXMOTO, вы соглашаетесь с нашей политикой обработки данных.
+        </div>
+        <div class="cookie-buttons">
+            <button class="btn-cookie btn-cookie-decline" onclick="declineCookies()">Отказаться</button>
+            <button class="btn-cookie btn-cookie-accept" onclick="acceptCookies()">Принять</button>
+        </div>
+    </div>
+
+<div class="modal-overlay" id="quizModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeQuiz()">&times;</button>
+    <h2>Подбор мотоцикла</h2>
+    <form id="quizForm">
+      <div class="quiz-question">
+        <label>1. Где планируете кататься?</label>
+        <select id="q1">
+          <option value="city">Город / асфальт</option>
+          <option value="offroad">Лес / бездорожье</option>
+          <option value="highway">Трасса / дальняк</option>
+          <option value="anywhere">Всё вместе</option>
+        </select>
+      </div>
+      <div class="quiz-question">
+        <label>2. Ваш опыт?</label>
+        <select id="q2">
+          <option value="beginner">Новичок (до 250 кубов)</option>
+          <option value="medium">Средний (250-600 кубов)</option>
+          <option value="expert">Опытный (любой объём)</option>
+        </select>
+      </div>
+      <div class="quiz-question">
+        <label>3. Предпочтительный объём двигателя?</label>
+        <select id="q3">
+          <option value="small">До 250 кубов</option>
+          <option value="medium">250-600 кубов</option>
+          <option value="big">600+ кубов</option>
+          <option value="any">Не важно</option>
+        </select>
+      </div>
+      <div class="quiz-question">
+        <label>4. Показывать только мотоциклы в наличии?</label>
+        <select id="q4">
+          <option value="yes">Да, только в наличии</option>
+          <option value="no">Показывать и под заказ</option>
+        </select>
+      </div>
+      <button type="button" class="btn-price" onclick="runQuiz()">Подобрать</button>
+    </form>
+    <div id="quizResult" style="display:none; margin-top:1.5rem;"></div>
+  </div>
+</div>
+
+
+<button id="scrollToTop" title="Наверх">↑</button>
+
+    <script>
+
+// ========== Квиз ==========
+const allMotos = [
+  
+  {
+    id: 1,
+    name: "Sanchez Maniac PR300",
+    category: "sport",
+    status: "on_order",
+    photos: ["dc1bfb7b397146c98b79b03847c6ea2d.jpeg","3942d9c8a720437db11aa22013f90d2b.jpeg","d8c2502ec8804b01b848e28e1298b891.jpeg","fb842925bb6840cfbf9a99531a774302.jpeg"]
+  },
+  
+  {
+    id: 4,
+    name: "Квадроцикл Hisun 550",
+    category: "adventure",
+    status: "available",
+    photos: ["fb38154d16814601ba382385ea4434a0.jfif","03e5308dc33c4c419727d0162c540588.jfif","4592be176dd2499fb4a9608bd61ef1de.jfif","028ffcd3f1f144848a5c37472665216b.jfif","d0155a4164094b468533a439c9d21daf.jfif","ed399441944b47b48f5a5a42e8bb0caa.jfif","44187b82ed6343a783ecdbddb851f15f.jfif","ab96924ec03a499bb3a0191c618b77db.jfif"]
+  },
+  
+  {
+    id: 5,
+    name: "Progasi Super Max 300",
+    category: "sport",
+    status: "available",
+    photos: ["b44514be2e754f77974c1d2083478827.jpeg","f62467462eb54f7794b747e45035d61e.jpeg","a87bce0e4c224f8e860122708cb21a7d.jpeg","1f7b5c85ff7448e19ae3c3d995dcd79e.jpeg","c14b7381edf04fa4a82b35d5834d9ec9.jpeg","15f7c6e117ca4fae9a40d031fe8605fa.jpeg"]
+  },
+  
+  {
+    id: 6,
+    name: "Shot NB300 rockstar",
+    category: "enduro",
+    status: "on_order",
+    photos: ["8e2ab1e270974d5d8606c8c165b201d0.jpeg","451d6d3052654626918754181fa82c87.jpeg","e7f3d8aef4d943c0b5502ea2adedc691.jpeg","9b72c92e87ef47f7ad26d50dff1d406e.jpeg","bd670ef07dac4c6ba68ed6534fc7d072.jpeg"]
+  },
+  
+  {
+    id: 7,
+    name: "Hengjian Z300 2T",
+    category: "enduro",
+    status: "on_order",
+    photos: ["8c279a8c4a4a473395c5ea93499e0545.jpeg","e4ee0bb4be64438cad8f7dccfdbc6719.jpeg","3db2893992674cc18670246f4c305abd.jpeg","58da01d0a66e4c06b98a76d7ff4b0edf.jpeg","42db6273eaa34331aaa47ad0d9b530ce.jpeg"]
+  }
+  
+];
+
+function openQuiz() {
+  document.getElementById('quizModal').classList.add('active');
+  document.getElementById('quizResult').style.display = 'none';
+  document.getElementById('quizForm').style.display = '';
+}
+
+function closeQuiz() {
+  document.getElementById('quizModal').classList.remove('active');
+}
+
+function getVolumeFromName(name) {
+  const match = name.match(/(\d+)/);
+  return match ? parseInt(match[1]) : null;
+}
+
+function runQuiz() {
+  const q1 = document.getElementById('q1').value;
+  const q2 = document.getElementById('q2').value;
+  const q3 = document.getElementById('q3').value;
+  const q4 = document.getElementById('q4').value;
+
+  let filtered = allMotos;
+
+  if (q1 === 'city') {
+    filtered = filtered.filter(m => ['street', 'cruiser', 'retro'].includes(m.category));
+  } else if (q1 === 'offroad') {
+    filtered = filtered.filter(m => ['enduro', 'dirt', 'adventure'].includes(m.category));
+  } else if (q1 === 'highway') {
+    filtered = filtered.filter(m => ['adventure', 'cruiser', 'sport'].includes(m.category));
+  } else if (q1 === 'anywhere') {
+    filtered = filtered.filter(m => ['adventure', 'enduro'].includes(m.category));
+  }
+
+  if (q2 === 'beginner') {
+    filtered = filtered.filter(m => {
+      const vol = getVolumeFromName(m.name);
+      return vol && vol <= 250;
+    });
+  } else if (q2 === 'medium') {
+    filtered = filtered.filter(m => {
+      const vol = getVolumeFromName(m.name);
+      return vol && vol >= 250 && vol <= 600;
+    });
+  }
+
+  if (q3 === 'small') {
+    filtered = filtered.filter(m => {
+      const vol = getVolumeFromName(m.name);
+      return vol && vol <= 250;
+    });
+  } else if (q3 === 'medium') {
+    filtered = filtered.filter(m => {
+      const vol = getVolumeFromName(m.name);
+      return vol && vol >= 250 && vol <= 600;
+    });
+  } else if (q3 === 'big') {
+    filtered = filtered.filter(m => {
+      const vol = getVolumeFromName(m.name);
+      return vol && vol >= 600;
+    });
+  }
+
+  if (q4 === 'yes') {
+    filtered = filtered.filter(m => m.status === 'available');
+  }
+
+  const resultDiv = document.getElementById('quizResult');
+  resultDiv.style.display = 'block';
+  if (filtered.length === 0) {
+    resultDiv.innerHTML = '<p>Подходящих моделей пока нет.</p><a href="https://t.me/maaxxrr?text=Добрый%20день!%20Помогите%20подобрать%20мотоцикл.%20Я%20с%20сайта%20MAXXMOTO" target="_blank" class="btn-price" style="display:inline-block;margin-top:0.8rem;">Написать менеджеру в Telegram</a>';
+  } else {
+    let html = '<h3>Рекомендуемые модели:</h3>';
+    filtered.forEach(m => {
+      html += `<div class="quiz-result-item">
+        <h3>${m.name}</h3>
+        <p>Категория: ${m.category} | ${m.status === 'available' ? 'В наличии' : 'Под заказ'}</p>
+        <a href="/moto/${m.id}" class="btn-detail">Подробнее</a>
+      </div>`;
+    });
+    resultDiv.innerHTML = html;
+  }
+  document.getElementById('quizForm').style.display = 'none';
+}
+
+        // === Переключатель темы ===
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            body.classList.add('dark-theme');
+            themeToggle.textContent = '🌙';
+        } else {
+            themeToggle.textContent = '☀️';
+        }
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-theme');
+            if (body.classList.contains('dark-theme')) {
+                localStorage.setItem('theme', 'dark');
+                themeToggle.textContent = '🌙';
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeToggle.textContent = '☀️';
+            }
+        });
+
+        // === Модальное окно ===
+        const priceModal = document.getElementById('priceModal');
+        window.openPriceModal = () => {
+    priceModal.classList.add('active');
+    fetch('/api/lead', { method: 'POST' }).catch(() => {});
+};
+        window.closePriceModal = () => priceModal.classList.remove('active');
+        priceModal.addEventListener('click', (e) => { if (e.target === priceModal) closePriceModal(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && priceModal.classList.contains('active')) closePriceModal(); });
+
+        // === Карточки каталога ===
+        const cards = document.querySelectorAll('.card');
+
+        // === Счетчик просмотров (Intersection Observer) ===
+        const viewedCards = new Set();
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const card = entry.target;
+                    const id = card.dataset.id;
+                    if (!viewedCards.has(id)) {
+                        viewedCards.add(id);
+                        fetch('/api/increment_view', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: `id=${id}`
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.success) {
+                                const viewsSpan = card.querySelector('.views-count');
+                                if (viewsSpan) viewsSpan.textContent = `👁 ${data.views} просмотров`;
+                            }
+                        })
+                        .catch(console.error);
+                    }
+                }
+            });
+        }, { threshold: 0.1 });
+
+        cards.forEach(card => observer.observe(card));
+
+        // === Опрос (через 6 секунд, если не пройден) ===
+        const surveyModal = document.getElementById('surveyModal');
+        const surveyAnswered = localStorage.getItem('surveyAnswered');
+        if (!surveyAnswered) {
+            setTimeout(() => {
+                surveyModal.classList.add('active');
+            }, 6000);
+        }
+        document.querySelectorAll('.survey-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const answer = this.dataset.answer;
+                localStorage.setItem('surveyAnswered', 'true');
+                surveyModal.classList.remove('active');
+                fetch('/api/submit_survey', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `answer=${encodeURIComponent(answer)}`
+                }).catch(console.error);
+            });
+        });
+        window.closeSurvey = () => surveyModal.classList.remove('active');
+
+        // === Куки-баннер ===
+        const cookieBanner = document.getElementById('cookieBanner');
+        const cookieChoice = localStorage.getItem('cookieChoice');
+        if (!cookieChoice) {
+            setTimeout(() => cookieBanner.classList.add('show'), 1500);
+        }
+        window.acceptCookies = () => {
+            localStorage.setItem('cookieChoice', 'accepted');
+            cookieBanner.classList.remove('show');
+        };
+        window.declineCookies = () => {
+            localStorage.setItem('cookieChoice', 'declined');
+            cookieBanner.classList.remove('show');
+        };
+        window.showCookieBanner = () => {
+            localStorage.removeItem('cookieChoice');
+            cookieBanner.classList.add('show');
+        };
+// === Карусель ===
+const slidesContainers = {};
+document.querySelectorAll('.carousel-slides').forEach(slider => {
+    const id = slider.id.replace('slides-', '');
+    slidesContainers[id] = { index: 0, total: slider.children.length };
+});
+
+function updateCarousel(id) {
+    const container = slidesContainers[id];
+    const slides = document.getElementById(`slides-${id}`);
+    slides.style.transform = `translateX(-${container.index * 100}%)`;
+    // Обновление точек
+    const dots = document.querySelectorAll(`#dots-${id} .carousel-dot`);
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === container.index));
+}
+
+window.moveSlide = function(id, dir) {
+    const container = slidesContainers[id];
+    container.index = (container.index + dir + container.total) % container.total;
+    updateCarousel(id);
+};
+
+window.goToSlide = function(id, index) {
+    slidesContainers[id].index = index;
+    updateCarousel(id);
+};
+
+// Поиск
+const searchInput = document.getElementById('searchInput');
+searchInput.addEventListener('input', function() {
+    const query = this.value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.card');
+    let found = false;
+    cards.forEach(card => {
+        const title = card.querySelector('.card-title').textContent.toLowerCase();
+        if (title.includes(query)) {
+            card.style.display = '';
+            found = true;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+    // Показать "ничего не найдено", если нет результатов
+    let noResults = document.getElementById('noResults');
+    if (!found) {
+        if (!noResults) {
+            noResults = document.createElement('p');
+            noResults.id = 'noResults';
+            noResults.textContent = 'Ничего не найдено';
+            noResults.style.textAlign = 'center';
+            document.querySelector('.catalog-grid').after(noResults);
+        }
+    } else {
+        if (noResults) noResults.remove();
+    }
+});
+
+// Избранное — подсчёт
+window.updateFavCount = function() {
+    const favs = JSON.parse(localStorage.getItem('favorites') || '[]');
+    document.getElementById('favCount').textContent = favs.length;
+    document.getElementById('favoritesLink').href = '/favorites?ids=' + favs.join(',');
+};
+updateFavCount();
+
+const scrollBtn = document.getElementById('scrollToTop');
+window.addEventListener('scroll', () => {
+    scrollBtn.classList.toggle('show', window.scrollY > 400);
+});
+scrollBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// Свайп для мобильных
+document.querySelectorAll('.card-img-carousel').forEach(carousel => {
+    let startX = 0;
+    const id = carousel.dataset.id;
+    carousel.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+    });
+    carousel.addEventListener('touchend', (e) => {
+        const endX = e.changedTouches[0].clientX;
+        const diff = startX - endX;
+        if (Math.abs(diff) > 50) {
+            moveSlide(id, diff > 0 ? 1 : -1);
+        }
+    });
+});
+
+    </script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/static/service-worker.js');
+  }
+
+</script>
+
+
+<script>
+(function () {
+  var params = new URLSearchParams(window.location.search);
+  var category = params.get('category') || 'all';
+  var sort = params.get('sort') || 'default';
+  var grid = document.getElementById('catalogGrid');
+  if (!grid) return;
+
+  var cards = Array.prototype.slice.call(grid.querySelectorAll('.card'));
+  function views(card) {
+    var el = card.querySelector('.views-count');
+    var match = el ? el.textContent.match(/(\d+)/) : null;
+    return match ? parseInt(match[1], 10) : 0;
+  }
+
+  cards.sort(function (a, b) {
+    if (sort === 'name') {
+      var an = a.querySelector('.card-title');
+      var bn = b.querySelector('.card-title');
+      return (an ? an.textContent : '').localeCompare(bn ? bn.textContent : '', 'ru');
+    }
+    if (sort === 'views_desc') return views(b) - views(a);
+    return (parseInt(a.dataset.id, 10) || 0) - (parseInt(b.dataset.id, 10) || 0);
+  });
+  cards.forEach(function (card) { grid.appendChild(card); });
+
+  var shown = 0;
+  cards.forEach(function (card) {
+    var visible = category === 'all' || card.dataset.category === category;
+    card.style.display = visible ? '' : 'none';
+    if (visible) shown += 1;
+  });
+
+  var count = document.querySelector('.catalog-count');
+  if (count) count.textContent = shown + ' товаров';
+
+  document.querySelectorAll('.filter-btn').forEach(function (link) {
+    var url = new URL(link.href, window.location.origin);
+    link.classList.toggle('active', (url.searchParams.get('category') || 'all') === category);
+    url.searchParams.set('sort', sort);
+    link.setAttribute('href', url.pathname + url.search + '#catalog');
+  });
+  document.querySelectorAll('.sort-btn').forEach(function (link) {
+    var url = new URL(link.href, window.location.origin);
+    link.classList.toggle('active', (url.searchParams.get('sort') || 'default') === sort);
+    url.searchParams.set('category', category);
+    link.setAttribute('href', url.pathname + url.search + '#catalog');
+  });
+
+  var empty = document.getElementById('noResults');
+  if (shown === 0) {
+    if (!empty) {
+      empty = document.createElement('p');
+      empty.id = 'noResults';
+      empty.className = 'catalog-empty';
+      empty.textContent = 'В этой категории пока нет товаров';
+      grid.parentNode.insertBefore(empty, grid.nextSibling);
+    }
+  } else if (empty) {
+    empty.remove();
+  }
+})();
+</script>
+
+</body>
+</html>

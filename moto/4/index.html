@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta name="description" content="Квадроцикл Hisun 550 — adventure. 🔥  Квадроцикл Hisun 550 (546 см³) — мощь, проходимость и надёжность в одном корпусе!... Купить в MAXXMOTO.">
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Квадроцикл Hisun 550 — MAXXMOTO</title>
+    <style>
+    :root {
+        --bg: #ffffff;
+        --text: #1a1a1a;
+        --card-bg: #ffffff;
+        --accent: #FF4500;
+        --accent-hover: #e03d00;
+        --border: #e0e0e0;
+        --shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    body.dark-theme {
+        --bg: #121212;
+        --text: #e0e0e0;
+        --card-bg: #1e1e1e;
+        --accent: #ff6d3a;
+        --accent-hover: #ff5722;
+        --border: #333;
+        --shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: system-ui, -apple-system, sans-serif;
+        background: var(--bg); color: var(--text);
+        transition: background 0.3s, color 0.3s;
+        padding: 1rem;
+        line-height: 1.6;
+    }
+
+    .back { color: var(--accent); text-decoration: none; margin-bottom: 1rem; display: inline-block; }
+    .detail-container { max-width: 1100px; margin: 0 auto; }
+
+    /* Галерея */
+    .gallery { position: relative; width: 100%; padding-top: 56%; overflow: hidden; border-radius: 16px; margin-bottom: 1.5rem; }
+    .gallery img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none; }
+    .gallery img.active { display: block; }
+    .gallery-nav { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .gallery-nav button { width: 12px; height: 12px; border-radius: 50%; border: none; background: var(--border); cursor: pointer; transition: background 0.2s; }
+    .gallery-nav button.active { background: var(--accent); }
+    .gal-arrow {
+        position: absolute; top: 50%; transform: translateY(-50%);
+        background: rgba(0,0,0,0.4); color: white; border: none;
+        font-size: 1.5rem; width: 36px; height: 36px; border-radius: 50%;
+        cursor: pointer; z-index: 5; display: flex; align-items: center; justify-content: center;
+        opacity: 0; transition: opacity 0.2s;
+    }
+    .gallery:hover .gal-arrow { opacity: 1; }
+    .gal-prev { left: 10px; }
+    .gal-next { right: 10px; }
+    .gal-arrow:hover { background: rgba(0,0,0,0.7); }
+
+    /* Заголовок и статус */
+    .title { font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent); }
+    .status { font-weight: 700; color: var(--accent); margin-bottom: 1rem; }
+
+    /* Две колонки */
+    .detail-layout { display: flex; gap: 2rem; flex-wrap: wrap; }
+    .detail-main { flex: 2; min-width: 300px; }
+    .detail-sidebar { flex: 1; min-width: 250px; display: flex; flex-direction: column; gap: 1rem; }
+
+    /* Полное описание */
+    .full-desc { white-space: pre-wrap; }
+
+    /* Кнопки действий */
+    .action-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .fav-btn, .share-btn {
+        flex: 1; background: var(--card-bg); border: 1px solid var(--border);
+        padding: 0.6rem 1rem; border-radius: 8px; font-weight: 600;
+        cursor: pointer; font-size: 0.9rem; text-align: center; transition: background 0.2s;
+    }
+    .fav-btn.favorited { background: var(--accent); color: white; border-color: var(--accent); }
+    .fav-btn:hover, .share-btn:hover { background: var(--border); }
+
+    /* Блок «С этим также смотрят» */
+    .related-block {
+        background: var(--card-bg); border-radius: 16px;
+        padding: 1.5rem; box-shadow: var(--shadow);
+    }
+    .related-block h3 { margin-bottom: 1rem; color: var(--accent); font-size: 1.2rem; }
+    .related-grid { display: flex; flex-direction: column; gap: 1rem; }
+    .related-item {
+        display: flex; align-items: center; gap: 0.8rem;
+        text-decoration: none; color: var(--text); padding: 0.5rem;
+        border-radius: 12px; transition: background 0.2s;
+    }
+    .related-item:hover { background: var(--border); }
+    .related-item img { width: 80px; height: 60px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
+    .related-item span { font-weight: 600; color: var(--accent); font-size: 0.95rem; }
+    .related-item:hover span { text-decoration: underline; }
+
+    /* Инструкция */
+    .manual-link {
+        display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+        background: var(--card-bg); border: 1px solid var(--border);
+        padding: 0.6rem; border-radius: 8px; font-weight: 600;
+        color: var(--accent); text-decoration: none; font-size: 0.9rem;
+    }
+    .manual-link:hover { background: var(--border); }
+    .manual-link img { width: 20px; height: 20px; }
+
+    /* Кнопка Узнать цену */
+    .contact-btn {
+        width: 100%; background: var(--accent); color: white; border: none;
+        padding: 0.8rem; border-radius: 8px; font-weight: 700;
+        font-size: 1rem; cursor: pointer; transition: background 0.2s;
+    }
+    .contact-btn:hover { background: var(--accent-hover); }
+
+.modal-link {
+    display: block;
+    background: var(--accent);
+    color: white;
+    padding: 0.8rem;
+    border-radius: 10px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+.modal-link:hover { background: var(--accent-hover); }
+
+    /* Адаптивность */
+    @media (max-width: 768px) {
+        .detail-layout { flex-direction: column; }
+    }
+</style>
+</head>
+<body>
+
+<script>
+(function () {
+  var originalFetch = window.fetch;
+  window.fetch = function (input, init) {
+    var url = typeof input === 'string' ? input : (input && input.url) || '';
+    if (url.indexOf('/api/') === 0) {
+      return Promise.resolve(new Response(JSON.stringify({ success: false }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      }));
+    }
+    return originalFetch.apply(this, arguments);
+  };
+})();
+</script>
+
+    <div class="detail-container">
+        <a href="/" class="back">← Назад в каталог</a>
+        <div class="gallery" id="gallery">
+    
+    <img src="/static/fb38154d16814601ba382385ea4434a0.jfif" alt="Квадроцикл Hisun 550" class="active">
+    
+    <img src="/static/03e5308dc33c4c419727d0162c540588.jfif" alt="Квадроцикл Hisun 550" class="">
+    
+    <img src="/static/4592be176dd2499fb4a9608bd61ef1de.jfif" alt="Квадроцикл Hisun 550" class="">
+    
+    <img src="/static/028ffcd3f1f144848a5c37472665216b.jfif" alt="Квадроцикл Hisun 550" class="">
+    
+    <img src="/static/d0155a4164094b468533a439c9d21daf.jfif" alt="Квадроцикл Hisun 550" class="">
+    
+    <img src="/static/ed399441944b47b48f5a5a42e8bb0caa.jfif" alt="Квадроцикл Hisun 550" class="">
+    
+    <img src="/static/44187b82ed6343a783ecdbddb851f15f.jfif" alt="Квадроцикл Hisun 550" class="">
+    
+    <img src="/static/ab96924ec03a499bb3a0191c618b77db.jfif" alt="Квадроцикл Hisun 550" class="">
+    
+    <button class="gal-arrow gal-prev" onclick="changeSlide(-1)">&#10094;</button>
+    <button class="gal-arrow gal-next" onclick="changeSlide(1)">&#10095;</button>
+</div>
+        
+        <div class="gallery-nav" id="galleryDots">
+            
+            <button class="active" data-index="0"></button>
+            
+            <button class="" data-index="1"></button>
+            
+            <button class="" data-index="2"></button>
+            
+            <button class="" data-index="3"></button>
+            
+            <button class="" data-index="4"></button>
+            
+            <button class="" data-index="5"></button>
+            
+            <button class="" data-index="6"></button>
+            
+            <button class="" data-index="7"></button>
+            
+        </div>
+        
+        <h1 class="title">Квадроцикл Hisun 550</h1>
+        <p class="status">Статус: В наличии</p>
+<div class="detail-layout">
+    <div class="detail-main">
+        <div class="full-desc">
+            ⚙️  Основные характеристики
+
+🏷 Бренд: Hisun
+🛞  Привод: карданный вал, подключаемый 2WD / 4WD
+🔒 Передний мост: дифференциал с блокировкой
+🔒 Задний мост: дифференциал с блокировкой
+
+⸻
+
+🏁  Двигатель и трансмиссия
+
+🔧  Объём двигателя: 546 см³
+💪  Мощность: 41 л.с.
+⛽ Система подачи топлива: инжектор
+❄ Охлаждение: жидкостное
+
+⚙ КПП: вариатор (CVT) с реверсом и пониженной передачей
+🔑  Запуск: электростартер + кик-стартер
+
+⸻
+
+🚀  Динамика
+
+🏎 Максимальная скорость: 90 км/ч
+🎒  Максимальная грузоподъёмность: 234 кг
+⛽ Объём бака: 18 л
+
+⸻
+
+🛞  Ходовая часть
+
+🛞  Передние шины: 25×8-12
+🛞  Задние шины: 25×10-12
+
+🛑  Тормоза: дисковые (перед / зад)
+        </div>
+    </div><!-- закрытие detail-main -->
+
+    <div class="detail-sidebar">
+        <div class="action-buttons">
+            <button id="favBtn" class="fav-btn" data-id="4">♡ В избранное</button>
+            <button class="share-btn" onclick="shareProduct()">📤 Поделиться</button>
+        </div>
+
+        
+
+        
+
+        <button class="contact-btn" onclick="openPriceModal()">Узнать цену</button>
+    </div><!-- закрытие detail-sidebar -->
+</div><!-- закрытие detail-layout -->
+
+    </div>
+
+    <!-- Модалка цены (как на главной) -->
+    <div class="modal-overlay" id="priceModal" style="display:none; position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:200;align-items:center;justify-content:center;">
+        <div class="modal" style="background:var(--card-bg);border-radius:20px;padding:2rem;max-width:400px;width:90%;text-align:center;position:relative;">
+            <button onclick="closePriceModal()" style="position:absolute;top:10px;right:15px;background:none;border:none;font-size:1.8rem;cursor:pointer;color:var(--text);">&times;</button>
+            <p>Для уточнения актуальной цены и наличия свяжитесь с менеджером удобным способом</p>
+            <div style="display:flex;flex-direction:column;gap:1rem;">
+                <a href="https://t.me/maaxxrr?text=Добрый%20день!%20Пишу%20с%20сайта%20MAXXMOTO" target="_blank" class="modal-link">Telegram</a>
+                <a href="https://www.avito.ru/user/maxmoto" target="_blank" style="background:var(--accent);color:white;padding:0.8rem;border-radius:10px;font-weight:700;text-decoration:none;">Авито</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Переключатель темы
+        const body = document.body;
+        const saved = localStorage.getItem('theme');
+        if (saved === 'dark') body.classList.add('dark-theme');
+        // Галерея
+        const images = document.querySelectorAll('#gallery img');
+        const dots = document.querySelectorAll('#galleryDots button');
+        let current = 0;
+        function show(index) {
+            images[current].classList.remove('active');
+            dots[current].classList.remove('active');
+            current = index;
+            images[current].classList.add('active');
+            dots[current].classList.add('active');
+        }
+        dots.forEach(dot => dot.addEventListener('click', () => show(parseInt(dot.dataset.index))));
+        // Модалка
+        const modal = document.getElementById('priceModal');
+        window.openPriceModal = () => {
+    modal.style.display = 'flex';
+    fetch('/api/lead', { method: 'POST' }).catch(() => {});
+};
+        window.closePriceModal = () => modal.style.display = 'none';
+        modal.addEventListener('click', (e) => { if (e.target === modal) closePriceModal(); });
+
+window.changeSlide = function(dir) {
+    let index = current + dir;
+    if (index < 0) index = images.length - 1;
+    if (index >= images.length) index = 0;
+    show(index);
+};
+
+// Избранное
+const favBtn = document.getElementById('favBtn');
+const motoId = favBtn.dataset.id;
+let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+
+function updateFavButton() {
+    if (favorites.includes(motoId)) {
+        favBtn.textContent = '♥ В избранном';
+        favBtn.classList.add('favorited');
+    } else {
+        favBtn.textContent = '♡ В избранное';
+        favBtn.classList.remove('favorited');
+    }
+    // Обновить счётчик на главной странице (если она открыта)
+    if (window.opener && !window.opener.closed) {
+        window.opener.updateFavCount();
+    }
+}
+updateFavButton();
+
+favBtn.addEventListener('click', () => {
+    if (favorites.includes(motoId)) {
+        favorites = favorites.filter(id => id !== motoId);
+        // При удалении из избранного ничего не отправляем
+    } else {
+        favorites.push(motoId);
+        // Отправить статистику на сервер
+        fetch('/api/fav_add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'id=' + motoId
+        }).catch(() => {});
+    }
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    updateFavButton();
+});
+// Поделиться
+function shareProduct() {
+    const url = window.location.href;
+    const title = document.querySelector('.title').textContent;
+    if (navigator.share) {
+        navigator.share({ title, url });
+    } else {
+        // fallback: открыть меню со ссылками
+        const shareMenu = document.createElement('div');
+        shareMenu.innerHTML = `
+            <div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--card-bg);padding:1.5rem;border-radius:12px;z-index:300;box-shadow:0 8px 24px rgba(0,0,0,0.3);text-align:center;">
+                <p>Поделиться:</p>
+                <a href="https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}" target="_blank">Telegram</a><br>
+                <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' ' + url)}" target="_blank">WhatsApp</a><br>
+                <a href="https://vk.com/share.php?url=${encodeURIComponent(url)}" target="_blank">VK</a><br>
+                <button onclick="navigator.clipboard.writeText('${url}');alert('Ссылка скопирована')">Скопировать ссылку</button>
+                <button onclick="this.parentElement.remove()">Закрыть</button>
+            </div>
+        `;
+        document.body.appendChild(shareMenu);
+    }
+}
+
+// Свайп для галереи
+const gallery = document.getElementById('gallery');
+let startX = 0;
+gallery.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
+gallery.addEventListener('touchend', (e) => {
+    const endX = e.changedTouches[0].clientX;
+    const diff = startX - endX;
+    if (Math.abs(diff) > 50) changeSlide(diff > 0 ? 1 : -1);
+});
+
+    </script>
+</body>
+</html>

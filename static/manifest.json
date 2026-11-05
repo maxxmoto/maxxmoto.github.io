@@ -1,0 +1,21 @@
+{
+  "name": "MAXXMOTO — каталог мотоциклов",
+  "short_name": "MAXXMOTO",
+  "description": "Каталог мотоциклов MAXXMOTO: эндуро, спорт, круизёры. Подбор и доставка.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#FF4500",
+  "icons": [
+    {
+      "src": "/static/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/static/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

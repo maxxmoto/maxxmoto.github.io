@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Избранное — MAXXMOTO</title>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #1a1a1a;
+            --card-bg: #ffffff;
+            --accent: #FF4500;
+            --border: #e0e0e0;
+        }
+        body.dark-theme {
+            --bg: #121212;
+            --text: #e0e0e0;
+            --card-bg: #1e1e1e;
+            --accent: #ff6d3a;
+            --border: #333333;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: system-ui, sans-serif;
+            background: var(--bg); color: var(--text);
+            padding: 2rem;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { color: var(--accent); margin-bottom: 1.5rem; }
+        .back { color: var(--accent); text-decoration: none; }
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        .card:hover { transform: scale(1.02); }
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .card-body { padding: 1rem; }
+        .card-title { font-size: 1.2rem; margin-bottom: 0.5rem; }
+        .btn {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back">← Назад в каталог</a>
+        <h1>Избранные мотоциклы</h1>
+        
+        <div class="catalog-grid">
+            
+            <div class="card">
+                <a href="/moto/1">
+                    <img src="/static/dc1bfb7b397146c98b79b03847c6ea2d.jpeg" alt="Sanchez Maniac PR300">
+                </a>
+                <div class="card-body">
+                    <h2 class="card-title">Sanchez Maniac PR300</h2>
+                    <a href="/moto/1" class="btn">Подробнее</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <a href="/moto/4">
+                    <img src="/static/fb38154d16814601ba382385ea4434a0.jfif" alt="Квадроцикл Hisun 550">
+                </a>
+                <div class="card-body">
+                    <h2 class="card-title">Квадроцикл Hisun 550</h2>
+                    <a href="/moto/4" class="btn">Подробнее</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <a href="/moto/5">
+                    <img src="/static/b44514be2e754f77974c1d2083478827.jpeg" alt="Progasi Super Max 300">
+                </a>
+                <div class="card-body">
+                    <h2 class="card-title">Progasi Super Max 300</h2>
+                    <a href="/moto/5" class="btn">Подробнее</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <a href="/moto/6">
+                    <img src="/static/8e2ab1e270974d5d8606c8c165b201d0.jpeg" alt="Shot NB300 rockstar">
+                </a>
+                <div class="card-body">
+                    <h2 class="card-title">Shot NB300 rockstar</h2>
+                    <a href="/moto/6" class="btn">Подробнее</a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <a href="/moto/7">
+                    <img src="/static/8c279a8c4a4a473395c5ea93499e0545.jpeg" alt="Hengjian Z300 2T">
+                </a>
+                <div class="card-body">
+                    <h2 class="card-title">Hengjian Z300 2T</h2>
+                    <a href="/moto/7" class="btn">Подробнее</a>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+    <script>
+        const saved = localStorage.getItem('theme');
+        if (saved === 'dark') document.body.classList.add('dark-theme');
+    </script>
+
+<script>
+(function () {
+  var favorites = JSON.parse(localStorage.getItem('favorites') || '[]').map(String);
+  var grid = document.querySelector('.catalog-grid');
+  if (!grid) return;
+  var cards = Array.prototype.slice.call(grid.querySelectorAll('.card'));
+  var shown = 0;
+  cards.forEach(function (card) {
+    var link = card.querySelector('a[href*="/moto/"]');
+    var match = link ? link.getAttribute('href').match(/\/moto\/(\d+)/) : null;
+    var id = match ? match[1] : null;
+    if (id && favorites.indexOf(id) !== -1) {
+      shown += 1;
+    } else {
+      card.remove();
+    }
+  });
+  if (shown === 0) {
+    grid.remove();
+    var empty = document.createElement('p');
+    empty.textContent = 'Вы ещё ничего не добавили в избранное.';
+    document.querySelector('.container').appendChild(empty);
+  }
+})();
+</script>
+
+</body>
+</html>

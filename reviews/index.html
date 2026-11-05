@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отзывы — MAXXMOTO</title>
+    <meta name="description" content="Честные отзывы клиентов о мотоциклах MAXXMOTO: питбайки, эндуро, кросс. Фото, имена, впечатления от покупки.">
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #1a1a1a;
+            --card-bg: #ffffff;
+            --accent: #FF4500;
+            --accent-hover: #e03d00;
+            --border: #e0e0e0;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        body.dark-theme {
+            --bg: #121212;
+            --text: #e0e0e0;
+            --card-bg: #1e1e1e;
+            --accent: #ff6d3a;
+            --accent-hover: #ff5722;
+            --border: #333;
+            --shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: var(--bg); color: var(--text);
+            padding: 1rem;
+            transition: background 0.3s, color 0.3s;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { color: var(--accent); text-align: center; margin: 2rem 0; font-size: 2rem; }
+        .back { color: var(--accent); text-decoration: none; display: inline-block; margin-bottom: 1rem; }
+        .reviews-list { display: flex; flex-direction: column; gap: 1.5rem; }
+        .review-card {
+            background: var(--card-bg); border-radius: 16px; box-shadow: var(--shadow);
+            padding: 1.5rem; display: flex; gap: 1.5rem; align-items: flex-start;
+        }
+        .review-card img {
+            width: 100px; height: 100px; border-radius: 50%; object-fit: cover;
+            flex-shrink: 0;
+        }
+        .review-content { flex: 1; }
+        .review-text { font-style: italic; margin-bottom: 0.5rem; color: var(--text); }
+        .review-author { font-weight: 600; color: var(--accent); }
+        @media (max-width: 500px) {
+            .review-card { flex-direction: column; align-items: center; text-align: center; }
+        }
+
+#scrollToTop {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+#scrollToTop.show { display: flex; }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back">← Назад в каталог</a>
+        <h1>Отзывы наших клиентов</h1>
+        
+        <div class="reviews-list">
+            
+            <div class="review-card">
+                
+                <img src="/static/review_79d07dc8b9604d419fcb9ca4ad38d353.JPG" alt="Starwers">
+                
+                <div class="review-content">
+                    <p class="review-text">«Заказывал через Максима Progasi super max250 пришел довольно быстро, пришёл без единой царапины, мотоцикл работает чётко!»</p>
+                    <p class="review-author">— Starwers</p>
+                </div>
+            </div>
+            
+            <div class="review-card">
+                
+                <img src="/static/review_4f8daf76c4d24faa80550907ffcd2c04.JPG" alt="Никита">
+                
+                <div class="review-content">
+                    <p class="review-text">«Заказывал через Максима Kews K16 R-Edition. Мотоцикл пришел раньше установленного срока, что не может не радовать. Пришел в отличном состоянии, без царапин/коцок и т.п. Со сборкой проблем не возникло, все детали на месте, заводская упаковка так же была в сохранности.
+Однозначно рекомендую заказывать у Максима, одни из самых низких цен на рынке, лично я ниже не видел)»</p>
+                    <p class="review-author">— Никита</p>
+                </div>
+            </div>
+            
+            <div class="review-card">
+                
+                <img src="/static/review_15e00b922d534f59845a3a041218a426.JPG" alt="Влад">
+                
+                <div class="review-content">
+                    <p class="review-text">«Заказывал мотоцикл progasi super max 300 pro BKGTR через максима, все прошло успешно, советую данного продавца!»</p>
+                    <p class="review-author">— Влад</p>
+                </div>
+            </div>
+            
+            <div class="review-card">
+                
+                <img src="/static/review_822ec225ee5a476ab8c76dbaedc824f9.JPG" alt="Endurist">
+                
+                <div class="review-content">
+                    <p class="review-text">«Спасибо за доставку Максиму, пришло за 2 недели. Также все настроили , смазали его. Рекомендую.»</p>
+                    <p class="review-author">— Endurist</p>
+                </div>
+            </div>
+            
+            <div class="review-card">
+                
+                <img src="/static/review_e14ce75426774846997aa84109ee0139.JPG" alt="Maks">
+                
+                <div class="review-content">
+                    <p class="review-text">«Выражаю благодарность Максиму, 🏍️  заказал 07.03.2026, получил 28.03.2026! Все по факту, очень доволен. Жду сезона 😁  
+Всех благ и процветания 🤝»</p>
+                    <p class="review-author">— Maks</p>
+                </div>
+            </div>
+            
+            <div class="review-card">
+                
+                <div class="review-content">
+                    <p class="review-text">«Заказывал у Максима BKGTR pr 300, доставка заняла чуть меньше 2 недель. Продавец ответил на все интересующие вопросы, до и после покупки всегда был на связи. Пока нет возможности прикрепить фото. 
+
+Покупкой доволен, Максиму респект»</p>
+                    <p class="review-author">— reworp</p>
+                </div>
+            </div>
+            
+            <div class="review-card">
+                
+                <img src="/static/review_1a463936f70a46fe8cee1bb92e5031cf.JPG" alt="Александр">
+                
+                <div class="review-content">
+                    <p class="review-text">«Хочется еще раз поблагодарить 🤝 Максима за быструю и честную доставку мотоцикла. Нашел Максима на avito и не прогадал). Это вообще мой первый выбор мото и, если честно вообще в них не шарю 😄 😂 . В чатах эндуристов мне посоветовали взять для начала ММЗ, но Максим предложил выбрать Sycmcc 300. Вообщем подписали  договор и уже по-моему через 10 дней он пришел в коробке. Сначала хотел воспользоваться услугами Максима по сборке( лучше выбирайте этот вариант 😄 ), но я решил поломать голову и собрал сам. Нужно отдать должное выдержке и терпению этого парня, отвечал на мои глупые вопросы четко👌 . Вообщем собирал 2 вечера по  выходном ☺️ . И я его победил ) завелся в первый раз с полпинка, правда последующие разы не так быстро 🧐 , но это мой косяк) сейчас  все ок☺️ . Никогда не управлял мотоциклом , максимум на велосипедом😆 , оказывается ничего сложного ) Максима рекомендую 👌 
+Желаю Максиму хороших клиентов и продолжать  это дело 🤝 😏 👍🤝»</p>
+                    <p class="review-author">— Александр</p>
+                </div>
+            </div>
+            
+            <div class="review-card">
+                
+                <img src="/static/review_e989eb36aae54efda5ca43558cc029e6.JPG" alt="Пользователь">
+                
+                <div class="review-content">
+                    <p class="review-text">«Хочу оставить отзыв о покупке мотоцикла BKGTR NC300S у Максима. 
+Доставка заняла 10 дней с момента отправки.  Мотоцикл приехал полностью комплектным, все детали были на месте.  Никаких проблем со сборкой не возникло, всё подошло идеально
+Хочу отметить работу продавца. Максим всегда оставался на связи на всех этапах,  от заказа до получения. Отвечал быстро и по делу, помог с возникшими вопросами. Приятно иметь дело с ним. 
+
+Спасибо за качественный товар и сервис!»</p>
+                    <p class="review-author">— Пользователь</p>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+
+<button id="scrollToTop" title="Наверх">↑</button>
+
+    <script>
+        const saved = localStorage.getItem('theme');
+        if (saved === 'dark') document.body.classList.add('dark-theme');
+
+const scrollBtn = document.getElementById('scrollToTop');
+window.addEventListener('scroll', () => {
+    scrollBtn.classList.toggle('show', window.scrollY > 400);
+});
+scrollBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+    </script>
+
+</body>
+</html>
